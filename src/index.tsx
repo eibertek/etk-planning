@@ -15,15 +15,12 @@ const AppNavigator = createStackNavigator({
   },
   NewTask: {
     screen: NewTask,
-    title: 'Details',
   },
   EditTask: {
     screen: NewTask,
-    title: 'New Task',
   },
   ViewTask: {
     screen: TaskList,
-    title: 'View Task',
   },
 });
 

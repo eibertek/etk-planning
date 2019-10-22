@@ -89,12 +89,11 @@ class DriverConnector {
 
     public getCollection = async (query='') => {
         const data = await this.connectionInstance!.getData(this.key);
-        console.log('collection', data);
         return data;
     }
 }
 
-class StorageConnector {
+export class StorageConnector {
 
     public setData = async (key: string, data: any) => {
        return await AsyncStorage.setItem(key, JSON.stringify(data));
@@ -104,7 +103,11 @@ class StorageConnector {
         const item = await AsyncStorage.getItem(key);
         if(!item) return [];    
         return JSON.parse(item);
-    }    
+    }
+    
+    public static Purge = async () => {
+        return await AsyncStorage.clear();
+    }
 }
 
 class SQLConnector {}

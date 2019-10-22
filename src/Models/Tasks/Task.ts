@@ -25,6 +25,7 @@ const dataStruct:DataStruct ={
 export class Task extends Driver {
 
         public props: TaskProps = {};
+        private logError: Array<string> = [];
 
         constructor(props:TaskProps){            
             super(dataStruct);
@@ -35,11 +36,19 @@ export class Task extends Driver {
             }
         }
 
-        public static getAll = async () => {
-            const collection = await Task.getCollection(dataStruct);
-            console.log('static getAll', collection);
+        public static getAll = async (queryData?: TaskProps) => {
+            let collection = await Task.getCollection(dataStruct);
+            if(queryData) {
+                collection = collection.filter((el:TaskProps) => {
+                    let isFiltered = true;
+                    Object.keys(queryData).forEach((item)=>{
+                        isFiltered = isFiltered && queryData[item] === el[item];
+                    });
+                    return isFiltered;
+                });
+                return collection.map((el:TaskProps) => new Task(el));
+            }
             return collection.map((el:TaskProps) => new Task(el));
-
         }
 
         private load = async (props: TaskProps) => {
@@ -56,8 +65,27 @@ export class Task extends Driver {
         public isLoaded = () => this.loadedItem;
 
         public save = () => {
-            this.onSave(this.props);
-            this.loadedItem = true;
+           try{
+                this.validations();
+                this.onSave(this.props).then(result => {
+                    this.loadedItem = true;
+                    this.logError = [];
+                    return true;     
+                });
+           }catch(e){
+               this.logError.push(e);
+               console.log(e);
+               return false;
+           }           
+        }
+
+        private validations = () => {
+            if(!this.props.id) {
+                throw new Error('Model not initialized correctly');
+            }
+            if(_.isEmpty(this.props) || _.isEmpty(this.props.name) || _.isEmpty(this.props.description) || _.isEmpty(this.props.estimated)) {
+                throw new Error('Model has empty values');
+            }
         }
 
         public set = ([prop, value]:[string, any]) => {
