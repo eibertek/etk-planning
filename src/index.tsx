@@ -1,8 +1,9 @@
 import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { ThemeProvider } from 'react-native-elements';
 import LandingPage from './Views/LandingPage';
-import NewTask from './Views/TaskModal/';
+import NewTask from './Views/TaskModal/NewTask';
 import TaskList from './Views/TaskList';
 
 interface Props {
@@ -24,4 +25,10 @@ const AppNavigator = createStackNavigator({
   },
 });
 
-export default createAppContainer(AppNavigator);
+const AppNavigation = createAppContainer(AppNavigator);
+const App = () => <>
+      <ThemeProvider>
+        <AppNavigation />
+    </ThemeProvider>
+</>
+export default App;
