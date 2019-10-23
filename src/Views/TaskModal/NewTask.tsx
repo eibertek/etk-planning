@@ -1,12 +1,15 @@
 
 import React from 'react'
-import { View, NativeSyntheticEvent } from 'react-native';
+import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import { Button, Text, Input  } from 'react-native-elements';
 import Task, { TaskProps } from '../../Models/Tasks';
 
-interface Props {};
+interface Props {
+    navigation: any;
+};
+
 const taskProps: TaskProps = {
     charge:0,
     description:'',
@@ -19,8 +22,11 @@ const taskProps: TaskProps = {
 const NewTask: React.FunctionComponent<Props> = (props:Props) => {
 
     const [task, setTaskField] = React.useState({});
-    console.log(task);
-
+    const onSave = () => {
+        const newTask = new Task(task);
+        newTask.save();
+        props.navigation.goBack();
+    };
     return (
         <View>
             <Text h1>New Task</Text>
@@ -38,7 +44,7 @@ const NewTask: React.FunctionComponent<Props> = (props:Props) => {
                 />
             )
             )}
-            <Button title="Save" />
+            <Button title="Save" onPress={onSave} />
         </View>
     )
 }
