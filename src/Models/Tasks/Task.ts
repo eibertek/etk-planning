@@ -96,8 +96,8 @@ export class Task extends Driver {
             return value ? this.props[value] : this.props;
         }
         
-        public delete = () => {
-            this.onDelete(this.props);
+        public delete = async () => {
+            return await this.onDelete(this.props);
         }
 
         public changeTime = ({amount, time='hours'}:{amount:number, time?:any}) => {
