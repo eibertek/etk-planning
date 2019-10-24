@@ -3,10 +3,13 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import moment from 'moment';
 import Task, { TaskProps } from '../../Models/Tasks';
+import { StorageConnector } from '../../Models/driver';
+import { ListItem } from 'react-native-elements';
+import { styles } from '../../Styles';
 
 interface Props {
-    title: string;
-    queryData: TaskProps;
+    title?: string;
+    queryData?: TaskProps;
 };
 
 const TaskList: React.FunctionComponent<Props> = (props:Props) => {
@@ -22,26 +25,30 @@ const TaskList: React.FunctionComponent<Props> = (props:Props) => {
         status: 'IN PROGRESS',
     };
     // const task = new Task(newTaskProps); 
-    // StorageConnector.Purge();    
+   // StorageConnector.Purge();    
     const [tasks, setTasks] = React.useState();
     if(!tasks) {
-        Task.getAll().then(data => setTasks(data));
+        console.log('Loading tasks', tasks && tasks[0]);   
+        Task.getAll().then(data => {
+            console.log(data);
+            setTasks(data);
+        });
     }    
-   // tasks.save();    
+   // tasks.save(); 
     return (
-        <View>
-            <Text>Task List</Text>
-            <Text>{tasks && tasks.length}</Text>
-            <View>
-                {tasks && tasks.map((task: TaskProps)=>{
+        <View style={styles.taskList}>
+            <Text>{props.title || 'Tasks List'}</Text>
+                {tasks && tasks.map((task: TaskProps, i: number)=>{
                     return (
-                    <>
-                        <Text>{task.get('name')}</Text>
-                        <Text>{task.get('status')}</Text>
-                    </>
+                        <ListItem
+                            key={i}
+                            title={task.name}
+                            subtitle={task.description}
+                            bottomDivider
+                            rightElement={<Text>{task.status}</Text>}
+                        />
                     ) 
                 })}
-            </View>
         </View>
     )
 }

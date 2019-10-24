@@ -46,9 +46,8 @@ export class Task extends Driver {
                     });
                     return isFiltered;
                 });
-                return collection.map((el:TaskProps) => new Task(el));
             }
-            return collection.map((el:TaskProps) => new Task(el));
+            return collection.map((el:TaskProps) => el);
         }
 
         private load = async (props: TaskProps) => {
@@ -64,14 +63,12 @@ export class Task extends Driver {
 
         public isLoaded = () => this.loadedItem;
 
-        public save = () => {
+        public save = async () => {
            try{
                 this.validations();
-                this.onSave(this.props).then(result => {
-                    this.loadedItem = true;
-                    this.logError = [];
-                    return true;     
-                });
+                const result = this.onSave(this.props);
+                this.loadedItem = true;
+                return result;
            }catch(e){
                this.logError.push(e);
                console.log(e);
@@ -88,6 +85,7 @@ export class Task extends Driver {
             }
         }
 
+        public getErrors = () => this.logError.join(',');
         public set = ([prop, value]:[string, any]) => {
             this.props[prop] = value;
         }

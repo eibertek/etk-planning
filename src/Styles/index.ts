@@ -18,7 +18,10 @@ export const styles = StyleSheet.create({
       right: 0,
     },
     body: {
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.lighter,
+      flex: 1,
+//      flexFlow: 'row',
+      alignItems: 'stretch',            
     },
     sectionContainer: {
       marginTop: 32,
@@ -54,40 +57,37 @@ export const styles = StyleSheet.create({
     },
     logo: {
       opacity: 1,
-      resizeMode: 'cover',
-      width:100,
-      height:100,
-      paddingLeft: 100  
+      width:40,
+      height:40,
+      alignItems:'center',
+      marginLeft:20,
     },    
     logoText: {
       fontSize:30,
       fontWeight: "600"
     },
+    menuButton:{
+      flexDirection:'row',
+      backgroundColor: Colors.lighter,
+    },
+    header:{
+      flex:1,
+      flexDirection:'row',
+      justifyContent:'space-between',
+    },
+    exitButton: {
+      marginRight:20,
+    },
     buttonRounded:{
+      width:60,
+      height:60,
       borderRadius:45,
-      paddingVertical:15,
-      paddingHorizontal:10,
-      backgroundColor:'#00BCD4',
-      borderWidth: 1,
-      borderColor: '#fff'      
+      justifyContent: 'flex-start',
+      margin:10,
     },
     buttonText:{
-      fontSize:30,
-      fontWeight:"500",
     },
-    buttonXS:{
-      width:60,
-    },
-    buttonMD:{
-      width:70,
-    },
-    textXS:{
-      fontSize:10,
-      fontWeight:"500",
-    },
-    textMD:{
-      fontSize:30,
-      fontWeight:"500",
-      paddingLeft:5,
-    },    
+    taskList:{
+      flexShrink: 0,
+    }
   });
