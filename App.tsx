@@ -14,7 +14,6 @@ import {
   View,
   Text,
   StatusBar,
-  PermissionsAndroid,
 } from 'react-native';
 
 import {

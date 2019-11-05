@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "purge": "rm -r ./android/app/build",
     "test": "jest"
   },
   "dependencies": {
@@ -13,6 +14,8 @@
     "@types/jest": "^24.0.19",
     "@types/react": "^16.9.9",
     "@types/react-native": "^0.60.21",
+    "@types/react-native-datepicker": "^1.7.0",
+    "@types/react-redux": "^7.1.5",
     "@types/react-test-renderer": "^16.9.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -26,9 +29,11 @@
     "react-native-screens": "1.0.0-alpha.23",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.0.10",
+    "react-navigation-redux-helpers": "^4.0.1",
     "react-navigation-stack": "^1.10.2",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
+    "redux-saga": "^1.1.1",
     "typescript": "^3.6.4"
   },
   "devDependencies": {

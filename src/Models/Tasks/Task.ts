@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import Driver, { DataStruct, ID } from '../driver';
 
-declare type Status = 'NEW' | 'IN PROGRESS' | 'QA' | 'FINISH' | 'FIXED';
+export declare type Status = 'NEW' | 'IN PROGRESS' | 'QA' | 'FINISH' | 'FIXED';
 
 export declare type TaskProps = {
     id?: ID;

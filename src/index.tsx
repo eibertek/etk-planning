@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Image, Text, BackHandler } from 'react-native';
-import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { ThemeProvider, Button } from 'react-native-elements';
+import { Provider, connect } from 'react-redux'; 
 import LandingPage from './Views/LandingPage';
 import NewTask from './Views/TaskModal/NewTask';
 import TaskList from './Views/TaskList';
 import { styles } from './Styles';
+import { store } from './redux';
+import { createAppContainer } from 'react-navigation';
 
 interface Props {
     navigation: any;
@@ -30,7 +32,7 @@ class LogoTitle extends React.Component {
   }
 }
 
-const AppNavigator = createStackNavigator({
+export const AppNavigator = createStackNavigator({
   LandingPage: {
     screen: LandingPage,
   },
@@ -42,7 +44,7 @@ const AppNavigator = createStackNavigator({
   },
   ViewTask: {
     screen: TaskList,
-  }, 
+  },   
 },
 {
   defaultNavigationOptions: {
@@ -53,10 +55,35 @@ const AppNavigator = createStackNavigator({
   },
 });
 
+const mapStateToProps = (state: any) => ({
+  state: state.nav,
+});
+
+// const AppWithNavigationState = connect(mapStateToProps)(AppWithReduxNavigation);
 const AppNavigation = createAppContainer(AppNavigator);
-const App = () => <>
-      <ThemeProvider>
-        <AppNavigation />
-    </ThemeProvider>
-</>
+
+export const NavigatorInstance = {
+  dispatch:(action: any)=>{},
+};
+
+class App extends React.Component {
+  navigation: any;
+  componentDidMount() {
+    console.log(this.navigation);
+    NavigatorInstance.dispatch = this.navigation.dispatch;
+  }
+
+  render = () => {
+    return (
+    <>
+      <Provider store={store}>
+        <ThemeProvider>
+            <AppNavigation ref={(nav) => this.navigation = nav} />
+        </ThemeProvider>
+      </Provider>
+    </>
+    );
+  }
+}
+
 export default App;

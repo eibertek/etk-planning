@@ -1,15 +1,23 @@
 
 import React from 'react'
 import { View, Alert, Picker } from 'react-native';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Button, Text, Input  } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
 import Task, { TaskProps } from '../../Models/Tasks';
+import { Status } from '../../Models/Tasks/Task';
+import { TASKS_NEW_TASK } from '../../redux/reducers/task';
 
 interface Props {
     navigation: any;
+    task?: TaskProps;
+    onSave: (task:TaskProps) => void;
+    loading?: boolean;
+    message?: string;
 };
 
 const taskProps: TaskProps = {
@@ -23,20 +31,12 @@ const taskProps: TaskProps = {
 }
 const NewTask: React.FunctionComponent<Props> = (props:Props) => {
 
-    const [task, setTaskField] = React.useState({});
-    const onSave = () => {
-        console.log(task);
-        const newTask = new Task(task);
-        newTask.save().then(data=>{
-            if(newTask.getErrors()==="") {
-                Alert.alert('Task Saved!!');
-                props.navigation.goBack();    
-            }
-        });
-    };
+    const [task, setTaskField] = React.useState(props.task || {});
+    if(props.loading) return <><Text>Loading....</Text></>;
     return (
         <View>
             <Text h1>New Task</Text>
+            {props.message && <Text>{props.message}</Text>}
             {Object.keys(taskProps).map((item:string) => {
                 switch(item) {
                     case 'description':
@@ -59,13 +59,13 @@ const NewTask: React.FunctionComponent<Props> = (props:Props) => {
                         date={task.estimated}
                         style={{width:'auto', marginVertical:20, marginLeft:10, }}
                         mode="datetime"
-                        onDateChange={(date: string) => setTaskField({...task, [item]: date})}
+                        onDateChange={(date: string) => setTaskField({...task, [item]: moment(date)})}
                         />
                     case 'status':
                         return  <Picker
                         selectedValue={task.status}
                         style={{width:'auto', marginVertical:20, marginLeft:10, }}
-                        onValueChange={(date: string) => setTaskField({...task, [item]: date})}>
+                        onValueChange={(status: Status) => setTaskField({...task, [item]: status})}>
                         <Picker.Item label="New" value="NEW" />
                         <Picker.Item label="In Progress" value="IN PROGRESS" />
                         <Picker.Item label="QA" value="QA" />
@@ -75,9 +75,26 @@ const NewTask: React.FunctionComponent<Props> = (props:Props) => {
                 }
             }
             )}
-            <Button title="Save" onPress={onSave} />
+            <Button title="Save" onPress={() => props.onSave(task)} />
         </View>
     )
 }
 
-export default NewTask;
+
+const mapStateToProps = (state: any) => ({
+    loading: state.tasks.loading,
+    message: state.tasks.message,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        onSave: (task: TaskProps) => dispatch({
+         type: TASKS_NEW_TASK.REQUESTED,
+         task,
+        }),
+    }
+}
+
+//@ts-ignore
+export default connect(mapStateToProps, mapDispatchToProps)(NewTask);
+
