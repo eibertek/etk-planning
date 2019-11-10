@@ -5,6 +5,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { StorageConnector } from '../../Models/driver';
 import { styles } from '../../Styles';
 import TaskList from '../TaskList';
+import { navigate } from '../../redux/actions';
+import { dispatch } from '../../redux';
+import Filters from '../Filters';
 
 export interface Props {
     name: string;
@@ -24,17 +27,13 @@ const index: React.FunctionComponent<Props> = (props:Props) => {
     return (
       <>
         <View style={styles.body}>
+              <Filters />
               <TaskList title="Last Tasks" />
         </View>
-        <View style={styles.menuButton} >
-        <Button
-              buttonStyle={styles.buttonRounded}
-              onPress={() => props.navigation.push('ViewTask')}
-              icon={<Icon name="list" size={40} />}
-            ></Button>            
+        <View style={styles.menuButton} >         
             <Button
               buttonStyle={styles.buttonRounded}
-              onPress={() => props.navigation.push('NewTask')}
+              onPress={() => dispatch(navigate({routeName:'NewTask'}))}
               icon={<Icon name="plus-circle" size={40} />}
             >
             </Button>

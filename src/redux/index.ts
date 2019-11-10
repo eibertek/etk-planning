@@ -6,8 +6,8 @@ import {
    //  createNavigationReducer,
   } from 'react-navigation-redux-helpers';
 import saga from './sagas';
-import { tasksReducer, TASKS_LIST_TASK } from './reducers/task';
-// import { AppNavigator } from '../index';
+import { tasksReducer } from './reducers/task';
+import { TASKS_LIST_TASK } from './actions';
 
 const initialStore = {
 };
@@ -26,7 +26,9 @@ const navMiddleware = createReactNavigationReduxMiddleware(
 const sagaMiddleware = createSagaMiddleware();
 export const store = createStore(appReducer, initialStore, applyMiddleware(sagaMiddleware, navMiddleware));
 
-sagaMiddleware.run(saga)
+sagaMiddleware.run(saga);
+
+export const dispatch = store.dispatch;
 
 store.dispatch({
     type: TASKS_LIST_TASK.REQUESTED,

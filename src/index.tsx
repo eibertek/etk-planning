@@ -69,7 +69,6 @@ export const NavigatorInstance = {
 class App extends React.Component {
   navigation: any;
   componentDidMount() {
-    console.log(this.navigation);
     NavigatorInstance.dispatch = this.navigation.dispatch;
   }
 

@@ -4,31 +4,24 @@ import Driver, { DataStruct, ID } from '../driver';
 
 export declare type Status = 'NEW' | 'IN PROGRESS' | 'QA' | 'FINISH' | 'FIXED';
 
-export declare type TaskProps = {
+export declare type ConfiguratorProps = {
     id?: ID;
-    parentId?: number;
-    sprintId?: Array<number>;
-    name?: string;
-    description?: string;
-    estimated?: moment.Moment;
-    charge?: number;
-    status?: Status;
     [key:string]: any;
 }
 
 const dataStruct:DataStruct ={
     type: 'STORAGE',
-    collectionName: 'Tasks',
+    collectionName: 'Configurator',
     connectionString: '',
 };
 
-export class Task extends Driver {
+export class Configurator extends Driver {
 
-        public props: TaskProps = {};
+        public props: ConfiguratorProps = {};
         private logError: Array<string> = [];
         public loadingPending = true;
 
-        constructor(props:TaskProps){            
+        constructor(props:ConfiguratorProps){            
             super(dataStruct);
             if(props.id) {
                 // props.id not defined yet. please load
@@ -39,10 +32,10 @@ export class Task extends Driver {
             }
         }
 
-        public static getAll = async (queryData?: TaskProps) => {
-            let collection = await Task.getCollection(dataStruct);
+        public static getAll = async (queryData?: ConfiguratorProps) => {
+            let collection = await Configurator.getCollection(dataStruct);
             if(queryData) {
-                collection = collection.filter((el:TaskProps) => {
+                collection = collection.filter((el:ConfiguratorProps) => {
                     let isFiltered = true;
                     Object.keys(queryData).forEach((item)=>{
                         isFiltered = isFiltered && queryData[item] === el[item];
@@ -50,7 +43,7 @@ export class Task extends Driver {
                     return isFiltered;
                 });
             }
-            return collection.map((el:TaskProps) => el);
+            return collection.map((el:ConfiguratorProps) => el);
         }
 
         public load = async () => {
@@ -83,7 +76,7 @@ export class Task extends Driver {
             if(!this.props.id || this.loadingPending) {
                 throw new Error('Model not initialized correctly');
             }
-            if(_.isEmpty(this.props) || _.isEmpty(this.props.name) || _.isEmpty(this.props.description) || _.isEmpty(this.props.estimated)) {
+            if(_.isEmpty(this.props)) {
                 throw new Error('Model has empty values');
             }
         }
@@ -99,47 +92,6 @@ export class Task extends Driver {
         
         public delete = async () => {
             return await this.onDelete(this.props);
-        }
-
-        public changeTime = ({amount, time='hours'}:{amount:number, time?:any}) => {
-            if(!this.props.estimated) throw new Error('Model doesnt have estimated value. its empty?');
-            if(amount > 0) {
-                this.props.estimated.add(amount, time);
-            }else{
-                this.props.estimated.subtract(amount, time);
-            }
-        }
-
-        private validateStatus = (status: Status) => {
-            const oldStatus = this.props.status;
-            switch (status) {
-                case 'FIXED':
-                    if(oldStatus !== 'QA' && oldStatus !== 'NEW' )
-                        throw "You cant change to FIXED if not NEW or QA";
-                    break;                                    
-                case 'QA':
-                    if(oldStatus !== 'IN PROGRESS')
-                        throw "You cant change to QA if old status is not IN PROGRESS";
-                    break;                                        
-                default:
-                    break;
-            }
-        }   
-
-        public changeStatus = (status: Status) => {
-            try{
-                this.validateStatus(status);
-            }catch(e){
-                return e;
-            }
-            this.props.status = status;
-            return;
-        }
-
-        public isFinished = () => {
-            if(!this.props.estimated) throw new Error('Model doesnt have estimated value. its empty?');
-            const momentTime = moment(this.props.estimated);
-            return moment.duration(momentTime.diff(moment())).asHours();
         }
 
 }

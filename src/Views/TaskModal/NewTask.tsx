@@ -8,9 +8,9 @@ import moment, { Moment } from 'moment';
 import { Button, Text, Input  } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
-import Task, { TaskProps } from '../../Models/Tasks';
+import { TaskProps } from '../../Models/Tasks';
 import { Status } from '../../Models/Tasks/Task';
-import { TASKS_NEW_TASK } from '../../redux/reducers/task';
+import { onSave } from '../../redux/actions';
 
 interface Props {
     navigation: any;
@@ -36,14 +36,30 @@ const NewTask: React.FunctionComponent<Props> = (props:Props) => {
     return (
         <View>
             <Text h1>New Task</Text>
-            {props.message && <Text>{props.message}</Text>}
+            {props.message !=='' && <Text>{props.message}</Text>}
             {Object.keys(taskProps).map((item:string) => {
+                const defaultValue = props.task && props.task[item] ? props.task[item] : '';                 
                 switch(item) {
                     case 'description':
+                            return  <Input
+                            placeholder={item}
+                            defaultValue={defaultValue}
+                            onChangeText={(text) => setTaskField({...task, [item]: text})}
+                           // containerStyle={{height:200}}
+                            multiline
+                            leftIcon={
+                                <Icon
+                                  name='angle-right'
+                                  size={24}
+                                  color='black'
+                                />
+                              }
+                            />                          
                     case 'name':
                     case 'charge':
                         return  <Input
                         placeholder={item}
+                        defaultValue={defaultValue}
                         onChangeText={(text) => setTaskField({...task, [item]: text})}
                         leftIcon={
                             <Icon
@@ -84,17 +100,14 @@ const NewTask: React.FunctionComponent<Props> = (props:Props) => {
 const mapStateToProps = (state: any) => ({
     loading: state.tasks.loading,
     message: state.tasks.message,
+    task: state.tasks.editTask.task,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        onSave: (task: TaskProps) => dispatch({
-         type: TASKS_NEW_TASK.REQUESTED,
-         task,
-        }),
+        onSave: (task: TaskProps) => dispatch(onSave(task)),
     }
 }
 
-//@ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)(NewTask);
 

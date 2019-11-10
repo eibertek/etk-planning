@@ -1,38 +1,29 @@
 import { TaskProps } from "../../Models/Tasks";
+import { TASKS_EDIT_TASK, TASKS_LIST_TASK, TASKS_NEW_TASK, NAVIGATION_CLEAN_STATE } from "../actions";
 
-export const actionCreator = (action: string) : {REQUESTED: string, COMPLETED: string, FAILED: string, } => 
-   {
-        return {
-            REQUESTED: `${action}::Requested`,
-            COMPLETED: `${action}::Completed`,
-            FAILED: `${action}::Failed`,
-       };
-   };
-
-export const TASKS_NEW_TASK = actionCreator('tasks::New Task');
-export const TASKS_LIST_TASK = actionCreator('tasks::List Task');
-export const TASKS_EDIT_TASK = actionCreator('tasks::Edit Task');
-export const TASKS_GET_TASK = actionCreator('tasks::Get Task');
-export const TASKS_REMOVE_TASK = actionCreator('tasks::Remove Task');
 
 declare interface TaskState {
     tasks: Array<TaskProps>;
     isLoading: boolean;
 }
 
-const initialTaskState = {
+export const initialTaskState = {
     tasks: [],
+    editTask: {
+        status: false,
+        task: {},
+    },    
     isLoading: false,
 };
 
 export interface ITodoAction {
     type: string;
     tasks: TaskState["tasks"];
+    task: TaskProps;
     message:String;
 };
 
 export function tasksReducer(state: TaskState = initialTaskState, action: ITodoAction) {
-    console.log(action);
     switch (action.type) {
         case TASKS_LIST_TASK.REQUESTED:
             return { ...state, loading: true, }
@@ -46,6 +37,14 @@ export function tasksReducer(state: TaskState = initialTaskState, action: ITodoA
             return { ...state, loading: false, message: 'all set' };
         case TASKS_NEW_TASK.FAILED:
                 return { ...state, loading: false, message: action.message };
+        case TASKS_EDIT_TASK.REQUESTED:
+            return { ...state, editTask: {status:true, task:action.task } }
+        case TASKS_EDIT_TASK.COMPLETED:
+            return { ...state, editTask: {status:false, task:{} }, message: 'all set' };
+        case TASKS_EDIT_TASK.FAILED:
+                return { ...state,  editTask: {status:false, task:{} }, message: action.message };    
+        case NAVIGATION_CLEAN_STATE:
+                return { ...state,  editTask: {status:false, task:{} }, message: '' };    
         default:
             return state
     }
