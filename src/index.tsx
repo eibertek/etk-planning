@@ -8,7 +8,9 @@ import NewTask from './Views/TaskModal/NewTask';
 import TaskList from './Views/TaskList';
 import { styles } from './Styles';
 import { store } from './redux';
+import { NavigatorInstance } from './redux/types';
 import { createAppContainer } from 'react-navigation';
+import Configurator from './Views/Configurator';
 
 interface Props {
     navigation: any;
@@ -45,6 +47,9 @@ export const AppNavigator = createStackNavigator({
   ViewTask: {
     screen: TaskList,
   },   
+  Configurator: {
+    screen: Configurator,
+  },     
 },
 {
   defaultNavigationOptions: {
@@ -61,10 +66,6 @@ const mapStateToProps = (state: any) => ({
 
 // const AppWithNavigationState = connect(mapStateToProps)(AppWithReduxNavigation);
 const AppNavigation = createAppContainer(AppNavigator);
-
-export const NavigatorInstance = {
-  dispatch:(action: any)=>{},
-};
 
 class App extends React.Component {
   navigation: any;

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, ImageBackground, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { StorageConnector } from '../../Models/driver';
@@ -41,6 +41,12 @@ const index: React.FunctionComponent<Props> = (props:Props) => {
               buttonStyle={styles.buttonRounded}
               onPress={alert}
               icon={<Icon name="bug" size={40} />}
+            >
+            </Button>
+            <Button
+              buttonStyle={styles.buttonRounded}
+              onPress={() => dispatch(navigate({routeName:'Configurator'}))}
+              icon={<Icon name="cog" size={40} />}
             >
             </Button>
         </View>

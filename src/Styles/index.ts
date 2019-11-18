@@ -82,8 +82,8 @@ export const styles = StyleSheet.create({
       width:60,
       height:60,
       borderRadius:45,
-      justifyContent: 'flex-start',
-      margin:10,
+      justifyContent: 'center',
+      margin:0,
     },
     buttonText:{
     },

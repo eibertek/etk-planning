@@ -1,8 +1,8 @@
 import { put, select } from 'redux-saga/effects';
 import { NavigationActions } from 'react-navigation';
-import Task, { TaskProps } from '../../Models/Tasks';
+import Task from '../../Models/Tasks';
 import { TASKS_LIST_TASK, TASKS_NEW_TASK, TASKS_EDIT_TASK, NAVIGATION_CLEAN_STATE, TASKS_REMOVE_TASK } from '../actions';
-import { NavigatorInstance } from '../../index';
+import { NavigatorInstance } from '../types';
 
 export function* listTasks(action: any) {
     try {

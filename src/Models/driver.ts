@@ -38,6 +38,11 @@ export default abstract class Driver {
         return await this.connector.setCollection(collection);
     }
 
+    protected onSaveItem = async (data: Props) => {
+        // let item = await this.connector.getCollection();
+        return await this.connector.setCollection(data);
+    }
+
     protected onDelete = async (data: Props) => {
         let collection = await this.connector.getCollection();
         collection = collection.filter((item:any) => item.id !== data.id);

@@ -1,19 +1,21 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, View, Text, Alert } from 'react-native';
+import { ScrollView, View, Alert } from 'react-native';
 import Task, { TaskProps } from '../../Models/Tasks';
-import { ListItem, ButtonGroup } from 'react-native-elements';
+import { ListItem, ButtonGroup, Text } from 'react-native-elements';
 import { styles } from '../../Styles';
 import { Dispatch } from 'redux';
 import { navigate, deleteTask as deleteTaskAction } from '../../redux/actions';
 import { dispatch } from '../../redux';
+import { ConfiguratorProps } from '../../Models/Configurator';
 
 interface Props {
     title?: string;
     queryData?: TaskProps;
     tasks: Array<TaskProps>;
     gotoEdit: (task:TaskProps)=>{};
+    config:ConfiguratorProps;
 };
 
 const gotoEdit = (task: TaskProps) => navigate({routeName:'NewTask', task, extra:'edit'});
@@ -30,10 +32,13 @@ const deleteTask = (task: TaskProps) => {
   );    
 };
 
-const TimeAlertStyle = (time: number) => {
-    if(time<=20) return { backgroundColor: 'red' };
-    if(time<=60) return { backgroundColor: 'yellow' };
-    if(time<=200) return { backgroundColor: 'green' };
+const TimeAlertStyle = (time: number, config: ConfiguratorProps) => {
+    const onTimeConfig = config.onTimeProps || {color:'green', limit:60};
+    const warningConfig = config.warningProps || {color:'yellow', limit:50};
+    const delayedConfig = config.delayedProps || {color:'red', limit:10};    
+    if(time<=delayedConfig.limit) return { backgroundColor: delayedConfig.color };
+    if(time<=warningConfig.limit) return { backgroundColor: warningConfig.color };
+    if(time<=onTimeConfig.limit) return { backgroundColor: onTimeConfig.color };
     return { backgroundColor: 'gray' };
 };
 
@@ -64,12 +69,12 @@ const TaskList: React.FunctionComponent<Props> = (props:Props) => {
     const tasks = props.tasks;
     return (
         <ScrollView  style={styles.taskList}>
-            <Text>{props.title || 'Tasks List'}</Text>
+            <Text h1>{props.title || 'Tasks List'}</Text>
                 {tasks && tasks.map((task: TaskProps, i: number)=>{
                     const taskModel = new Task(task);
                     return (
                         <ListItem
-                        containerStyle={TimeAlertStyle(taskModel.isFinished())}
+                        containerStyle={TimeAlertStyle(taskModel.isFinished(), props.config)}
                             key={i}
                             title={task.name}
                             subtitle={task.description}
@@ -84,7 +89,8 @@ const TaskList: React.FunctionComponent<Props> = (props:Props) => {
 }
 
 const mapStateToProps = (state: any) => ({
-    tasks: state.tasks.tasks
+    tasks: state.tasks.tasks,
+    config: state.config.config,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

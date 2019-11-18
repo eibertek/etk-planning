@@ -1,11 +1,20 @@
 import * as _ from 'lodash';
 import moment from 'moment';
 import Driver, { DataStruct, ID } from '../driver';
+import { SortingOptions } from '../Tasks';
 
 export declare type Status = 'NEW' | 'IN PROGRESS' | 'QA' | 'FINISH' | 'FIXED';
 
+export declare type Threshold = {
+    color:string;
+    limit:number;
+};
+
 export declare type ConfiguratorProps = {
-    id?: ID;
+    onTimeProps?:Threshold;
+    warningProps?:Threshold;
+    delayedProps?:Threshold;    
+    sortingOptions?: Array<SortingOptions>;
     [key:string]: any;
 }
 
@@ -23,27 +32,13 @@ export class Configurator extends Driver {
 
         constructor(props:ConfiguratorProps){            
             super(dataStruct);
-            if(props.id) {
-                // props.id not defined yet. please load
-                this.props = props;
-            }else{
-                this.props = { id:Math.random()*1000000, ...props};
-                this.loadingPending= false;
-            }
+            this.props = props;
+            this.loadingPending= false;
         }
 
-        public static getAll = async (queryData?: ConfiguratorProps) => {
+        public static getAll = async () => {
             let collection = await Configurator.getCollection(dataStruct);
-            if(queryData) {
-                collection = collection.filter((el:ConfiguratorProps) => {
-                    let isFiltered = true;
-                    Object.keys(queryData).forEach((item)=>{
-                        isFiltered = isFiltered && queryData[item] === el[item];
-                    });
-                    return isFiltered;
-                });
-            }
-            return collection.map((el:ConfiguratorProps) => el);
+            return collection;
         }
 
         public load = async () => {
@@ -62,10 +57,10 @@ export class Configurator extends Driver {
 
         public save = async () => {
            try{
-                this.validations();
-                const result = this.onSave(this.props);
+            //    this.validations();
+                const result = this.onSaveItem(this.props);
                 this.loadedItem = true;
-                return result;
+                return await result;
            }catch(e){
                this.logError.push(e);
                return false;

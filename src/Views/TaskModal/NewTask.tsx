@@ -1,10 +1,10 @@
 
 import React from 'react'
-import { View, Alert, Picker } from 'react-native';
+import { View, Picker } from 'react-native';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { Button, Text, Input  } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
